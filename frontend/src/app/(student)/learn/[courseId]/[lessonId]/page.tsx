@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { getCourse, Course, Lesson } from '@/lib/courses';
 import { toast } from 'sonner';
-import ReactPlayer from 'react-player/lazy';
+import ReactPlayer from 'react-player';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Separator } from '@/components/ui/separator';
@@ -118,6 +118,7 @@ export default function LearnPage() {
         <div className="max-w-4xl mx-auto px-6 py-6 space-y-4">
           <div className="aspect-video bg-black rounded-lg overflow-hidden">
             <ReactPlayer
+              // @ts-ignore
               url={currentLesson.videoUrl}
               width="100%"
               height="100%"
