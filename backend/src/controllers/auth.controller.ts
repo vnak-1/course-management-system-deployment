@@ -302,11 +302,11 @@ export const logout = async (
   next: NextFunction,
 ) => {
   try {
-    res.cookie('role', '', { httpOnly: false, secure: process.env.NODE_ENV === 'production', sameSite: 'strict', path: '/', expires: new Date(0) });
+    res.cookie('role', '', { httpOnly: false, secure: process.env.NODE_ENV === 'production', sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict', path: '/', expires: new Date(0) });
     res.cookie('jwt', '', {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production', // Only sends over HTTPS in production
-      sameSite: 'strict', // Protects against CSRF attacks
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict', // Protects against CSRF attacks
       path: '/', // Ensure it clears for the whole domain
       expires: new Date(0), // Set the cookie to expire
     });
