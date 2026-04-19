@@ -132,17 +132,12 @@ export const store = async (
       });
     }
 
-    // Else, check if video file exists
-    if (!req.file) {
-      return res.status(400).json({
-        status: 'error',
-        message: 'Please attach a video file for this lesson.',
-      });
+    // Use uploaded file OR provided videoUrl string OR leave empty
+    let videoUrl = req.body.videoUrl?.trim() ?? '';
+    if (req.file) {
+      const result = await uploadToR2(req.file);
+      videoUrl = result.fileUrl;
     }
-
-    // Then, upload to R2 Storage
-    const result = await uploadToR2(req.file);
-    const videoUrl = result.fileUrl;
 
     // Finally, create new lesson
     const newLesson = await prisma.lesson.create({
