@@ -7,6 +7,8 @@ import { z } from 'zod';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
+import { ThumbnailInput } from '@/components/courses/ThumbnailInput';
+import { ThumbnailInput } from '@/components/courses/ThumbnailInput';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -26,6 +28,10 @@ type CreateCourseInput = z.infer<typeof createCourseSchema>;
 
 export default function NewCoursePage() {
   const router = useRouter();
+  const [thumbFile, setThumbFile] = useState<File | null>(null);
+  const [thumbUrl, setThumbUrl] = useState('');
+  const [thumbFile, setThumbFile] = useState<File | null>(null);
+  const [thumbUrl, setThumbUrl] = useState('');
   const { register, handleSubmit, setValue, formState: { errors, isSubmitting } } = useForm<CreateCourseInput>({
     resolver: zodResolver(createCourseSchema) as any,
     defaultValues: {
@@ -42,10 +48,10 @@ export default function NewCoursePage() {
       formData.append('price', String(data.price));
       formData.append('discount', String(data.discount ?? 0));
       formData.append('discountQuantity', String(data.discountQuantity ?? 0));
-      if (data.thumbnail?.[0]) {
-        formData.append('thumbnail', data.thumbnail[0]);
-      } else if (data.thumbnailUrl) {
-        formData.append('thumbnailUrl', data.thumbnailUrl);
+      if (thumbFile) {
+        formData.append('thumbnail', thumbFile);
+      } else if (thumbUrl) {
+        formData.append('thumbnailUrl', thumbUrl);
       }
 
       await api.post('/courses', formData, {
@@ -106,14 +112,7 @@ export default function NewCoursePage() {
               </div>
             </div>
 
-            <div className="space-y-1">
-              <Label>Thumbnail</Label>
-              <Input type="file" accept="image/*" {...register('thumbnail')} />
-              <div className="flex gap-2 items-center">
-                <Input type="url" placeholder="https://example.com/image.jpg" {...register('thumbnailUrl')} />
-                <Button type="button" variant="outline" size="sm" onClick={() => setValue('thumbnailUrl', '')}>Clear</Button>
-              </div>
-            </div>
+            <ThumbnailInput onFileSelect={setThumbFile} onUrlChange={setThumbUrl} />
 
             <div className="flex gap-3 pt-2">
               <Button type="submit" disabled={isSubmitting}>
